@@ -1,0 +1,95 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+class Student {
+    private String name;
+    private String group;
+    private int course;
+    private List<Integer> grades;
+
+    // Конструктор
+    public Student(String name, String group, int course, List<Integer> grades) {
+        this.name = name;
+        this.group = group;
+        this.course = course;
+        this.grades = grades;
+    }
+
+    // Получение имени студента
+    public String getName() {
+        return name;
+    }
+
+    // Получение курса студента
+    public int getCourse() {
+        return course;
+    }
+
+    // Установка нового курса
+    public void setCourse(int course) {
+        this.course = course;
+    }
+
+    // Метод для расчета среднего балла
+    public double getAverageGrade() {
+        int sum = 0;
+        for (int grade : grades) {
+            sum += grade;
+        }
+        return grades.isEmpty() ? 0.0 : (double) sum / grades.size();
+    }
+
+
+    // Метод toString для удобного вывода информации о студенте
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                ", group='" + group + '\'' +
+                ", course=" + course +
+                ", averageGrade=" + getAverageGrade() +
+                '}';
+    }
+}
+
+public class StudentManager {
+    // Метод для удаления студентов со средним баллом < 3 и перевода на следующий курс
+    public static void updateStudentList(List<Student> students) {
+        Iterator<Student> iterator = students.iterator();
+
+        while (iterator.hasNext()) {
+            Student student = iterator.next();
+            if (student.getAverageGrade() < 3.0) {
+                iterator.remove();
+            } else {
+                student.setCourse(student.getCourse() + 1); // Перевод на следующий курс
+            }
+        }
+    }
+
+    // Метод для вывода студентов по заданному курсу
+    public static void printStudents(List<Student> students, int course) {
+        for (Student student : students) {
+            if (student.getCourse() == course) {
+                System.out.println(student.getName());
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        // Создаем список студентов
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("Иван Иванов", "A1", 1, List.of(4, 5, 3, 2)));
+        students.add(new Student("Мария Петрова", "A2", 2, List.of(5, 4, 5, 5)));
+        students.add(new Student("Петр Сидоров", "B1", 3, List.of(2, 2, 3, 1)));
+        students.add(new Student("Анна Смирнова", "B2", 1, List.of(3, 3, 4, 5)));
+
+        // Удаление студентов с низким средним баллом и перевод оставшихся на следующий курс
+        updateStudentList(students);
+
+        // Вывод студентов, которые учатся на втором курсе после обновления
+        System.out.println("Студенты на курсе 2:");
+        printStudents(students, 2);
+    }
+}
